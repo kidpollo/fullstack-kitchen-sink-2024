@@ -111,4 +111,10 @@ bun ios # new terminal
 
 ## Backend
 
+```bash
+python -m venv .venv
+source .venv/bin/activat
+cd python-lambda-backend
+pip install -r requirements.txt
+```
 
