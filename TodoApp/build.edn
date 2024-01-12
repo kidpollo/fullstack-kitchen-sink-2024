@@ -1,0 +1,3 @@
+{:main todo-app.core
+ :output-to "target/main.js"
+ :output-dir "target"}

@@ -1,0 +1,24 @@
+# editor
+.clj-kondo
+.lsp
+.idea
+.vscode
+
+# languages
+.venv
+.cpcache
+.bundle
+vendor
+
+# infra
+terragrunt.iml
+.terraform
+*.tfstate
+*.tfstate.backup
+*.out
+.terragrunt-cache
+.terraform.lock.hcl
+terragrunt
+
+# OS
+.DS_Store
