@@ -12,13 +12,13 @@ terraform {
 
 # API Gateway Logs
 resource "aws_cloudwatch_log_group" "todo_service_logs" {
-  name              = "/aws/api_gw/todo-app-service"
+  name              = "/aws/api_gw/todo-app-service-${var.env}"
 }
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
 
-  name          = "todo-app-service"
+  name          = "todo-app-service-${var.env}"
   description   = "TODO APP API"
   protocol_type = "HTTP"
 

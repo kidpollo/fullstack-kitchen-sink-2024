@@ -15,11 +15,12 @@ include "root" {
 }
 
 terraform {
-  source = "../../../../../modules/app"
+  source = "../../../../../modules/todo-api"
 }
 
 locals {
   region_vars = read_terragrunt_config(find_in_parent_folders("region.hcl"))
+  env_vars    = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 }
 
 dependency "todo_python_lambda" {
@@ -32,4 +33,5 @@ dependency "todo_python_lambda" {
 inputs = {
   aws_region = local.region_vars.locals.aws_region
   lambda_arn = dependency.todo_python_lambda.outputs.lambda_function_arn
+  env        = local.env_vars.locals.environment
 }

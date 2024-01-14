@@ -15,7 +15,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../../../../modules/python-lambda"
+  source = "../../../../../modules/ts-lambda"
 }
 
 locals {
@@ -24,8 +24,8 @@ locals {
 }
 
 inputs = {
-  function_name = "todo-python-lambda"
+  function_name = "todo-ts-lambda"
   aws_region = local.region_vars.locals.aws_region
-  lambda_path = "${get_repo_root()}/python-lambda-backend"
+  lambda_path = "${get_repo_root()}/ts-lambda-backend"
   env = local.env_vars.locals.environment
 }

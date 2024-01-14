@@ -19,6 +19,8 @@ terragrunt.iml
 .terragrunt-cache
 .terraform.lock.hcl
 terragrunt
+.aws*
 
 # OS
 .DS_Store
+.tmp

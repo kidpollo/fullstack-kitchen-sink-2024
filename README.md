@@ -111,6 +111,8 @@ bun ios # new terminal
 
 ## Backend
 
+### Python Lambda
+
 ```bash
 python -m venv .venv
 source .venv/bin/activat
@@ -118,3 +120,5 @@ cd python-lambda-backend
 pip install -r requirements.txt
 ```
 
+
+## TS Lambda

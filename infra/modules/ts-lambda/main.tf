@@ -26,21 +26,18 @@ locals {
 resource "random_uuid" "lambda_src_hash" {
   keepers = {
     for filename in setunion(
-      fileset(local.lambda_src_path, "*.py"),
-      fileset(local.lambda_src_path, "requirements.txt"),
-      fileset(local.lambda_src_path, "./**/*.py")
+      [for f in fileset(local.lambda_src_path, "**/*.ts"): f if length(regexall("node_modules", f)) == 0],
+      fileset(local.lambda_src_path, "package.json"),
     ):
     filename => filemd5("${local.lambda_src_path}/${filename}")
   }
 }
 
-# Automatically install dependencies to be packaged
-# with the Lambda function as required by AWS Lambda:
-# https://docs.aws.amazon.com/lambda/latest/dg/python-package.html#python-package-dependencies
-# Moves the lamda source code to a temp folder and installs the dependencies
-resource "null_resource" "install_dependencies" {
+# Build ts lambda package
+# Thankfuly, the Bun script does this nicely for us.
+resource "null_resource" "build_package" {
   provisioner "local-exec" {
-    command = "${path.module}/package.sh"
+    command = "cd ${local.lambda_src_path} && bun install && bun run build"
 
     environment = {
       tmp_path = local.tmp_path
@@ -51,29 +48,14 @@ resource "null_resource" "install_dependencies" {
   # Only re-run this if the dependencies or their versions
   # have changed since the last deployment with Terraform
   triggers = {
-    dependencies_versions = filemd5("${local.lambda_src_path}/requirements.txt")
     source_code_hash = random_uuid.lambda_src_hash.result
   }
 }
 
-# Create an archive form the Lambda source code,
-# filtering out unneeded files.
-data "archive_file" "lambda_source_package" {
-  type        = "zip"
-  source_dir  = local.tmp_path
-  output_path = "${path.module}/.tmp/${random_uuid.lambda_src_hash.result}.zip"
-
-  excludes    = [
-    ".venv",
-    "__pycache__",
-    "tests"
-  ]
-
-  # This is necessary, since archive_file is now a
-  # `data` source and not a `resource` anymore.
-  # Use `depends_on` to wait for the "install dependencies"
-  # task to be completed.
-  depends_on = [null_resource.install_dependencies]
+# Get the created archive file from the bun build script
+data "local_file" "lambda_source_package" {
+  filename = "${local.lambda_src_path}/dist/bundle.zip"
+  depends_on = [null_resource.build_package]
 }
 
 # Create an IAM execution role for the Lambda function.
@@ -107,6 +89,7 @@ EOF
 resource "aws_iam_role_policy" "log_writer" {
   name = "lambda-log-writer-policy-${var.function_name}-${var.env}"
   role = aws_iam_role.execution_role.id
+
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -128,13 +111,12 @@ resource "aws_lambda_function" "lambda_fn" {
   function_name = "${var.function_name}-${var.env}"
   //description = "TODO"
   role = aws_iam_role.execution_role.arn
-  filename = data.archive_file.lambda_source_package.output_path
-  runtime = "python3.12"
-  handler = "lambda.handler"
+  filename = data.local_file.lambda_source_package.filename
+  runtime = "nodejs18.x"
+  handler = "index.handler"
   memory_size = 128
   timeout = 30
-  architectures = ["x86_64"]
-  source_code_hash = data.archive_file.lambda_source_package.output_base64sha256
+  source_code_hash = data.local_file.lambda_source_package.content_base64sha256
 
   environment {
     variables = {
