@@ -1,0 +1,21 @@
+{
+  "name": "ts-lambda-backend",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.131",
+    "@types/bun": "latest",
+    "esbuild": "^0.19.11"
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2020 --outfile=dist/index.js",
+    "postbuild": "cd dist && zip -r bundle.zip index.js*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.490.0"
+  }
+}
