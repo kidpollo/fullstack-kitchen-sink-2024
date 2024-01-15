@@ -10,7 +10,7 @@ def get_values():
     return mathutils.get_zeros()
 
 # Entry point for Lambda execution
-def handler(event, context):
+def handler(event, _context):
     logging.info(get_values())
 
 # Entry point for local execution

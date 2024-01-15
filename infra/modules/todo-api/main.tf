@@ -10,6 +10,10 @@ terraform {
   }
 }
 
+locals {
+  lambda_arn = var.lambda_arn
+}
+
 # API Gateway Logs
 resource "aws_cloudwatch_log_group" "todo_service_logs" {
   name              = "/aws/api_gw/todo-app-service-${var.env}"
@@ -27,17 +31,17 @@ module "api_gateway" {
 
   integrations = {
     "GET /todo" = {
-      lambda_arn             = var.lambda_arn
+      lambda_arn             = local.lambda_arn
       payload_format_version = "2.0"
     }
 
     "POST /todo" = {
-      lambda_arn             = var.lambda_arn
+      lambda_arn             = local.lambda_arn
       payload_format_version = "2.0"
     }
 
     "DELETE /todo/{id}" = {
-      lambda_arn             = var.lambda_arn
+      lambda_arn             = local.lambda_arn
       payload_format_version = "2.0"
     }
   }
@@ -55,4 +59,12 @@ module "api_gateway" {
     responseLength          = "$context.responseLength"
     integrationErrorMessage = "$context.integrationErrorMessage"
   })
+}
+
+resource "aws_lambda_permission" "apigw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = local.lambda_arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = module.api_gateway.apigatewayv2_api_execution_arn
 }
