@@ -11,10 +11,18 @@
   },
   "dependencies": {
     "@cljs-oss/module-deps": "^1.1.1",
+    "@gluestack-style/react": "^1.0.39",
+    "@gluestack-ui/config": "latest",
+    "@gluestack-ui/themed": "^1.0.35",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-device-info": "^8.1.2",
-    "react-native-tcp-socket": "^6.0.6"
+    "react-native-gesture-handler": "^2.14.1",
+    "react-native-get-random-values": "^1.10.0",
+    "react-native-svg": "13.4.0",
+    "react-native-tcp-socket": "^6.0.6",
+    "react-native-vector-icons": "^10.0.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

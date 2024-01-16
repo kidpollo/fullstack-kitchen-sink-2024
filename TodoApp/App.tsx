@@ -5,114 +5,136 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+    StyledSafeAreaView,
+    StyledScrollView,
+    StyledKeyboardAvoidingView,
+    StyledGestureHandlerRootView,
+    ProgressBar,
+    SwipeableContainer,
+} from './components';
 
 import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+    HStack,
+    Text,
+    Pressable,
+    Icon,
+    AddIcon,
+    Box,
+    Link,
+} from '@gluestack-ui/themed';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import { useState, useRef } from 'react';
+import { getCompletedTasks, getDay, defaultTodos } from './utils';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () => {
+    const [item, setItem] = useState('');
+    const [todos, setTodos] = useState(defaultTodos);
+    const [swipedItemId, setSwipedItemId] = useState(null);
+    const [lastItemSelected, setLastItemSelected] = useState(false);
+    const inputRef = useRef(null);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const addTodo = () => {
+    const lastTodo = todos[todos.length - 1];
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    if (lastTodo.task !== '') {
+      setTodos([
+        ...todos,
+        {
+          id: uuidv4(),
+          task: '',
+          completed: false,
+        },
+      ]);
+      setItem('');
+      setLastItemSelected(false);
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+      <StyledKeyboardAvoidingView
+        w="$full"
+        h="$full"
+        bg="$backgroundDark900"
+        behavior="padding"
+        keyboardVerticalOffset={60}>
+        <StyledSafeAreaView
+          $base-bg="$backgroundDark900"
+          $md-bg="$black"
+          w="$full"
+          h="$full">
+          <StyledGestureHandlerRootView
+            w="$full"
+            minHeight="$full"
+            $md-justifyContent="center"
+            $md-alignItems="center"
+            $md-bg="$black">
+            <StyledScrollView
+              pt="$6"
+              pb="$10"
+              bg="$backgroundDark900"
+              $base-w="$full"
+              $md-w={700}
+              $md-maxHeight={500}
+              $md-borderRadius="$sm"
+              flexDirection="column">
+              <Box px="$6">
+                <Text fontSize="$xl">
+                  {getDay()}
+                </Text>
+                <ProgressBar
+                  completedTasks={getCompletedTasks(
+                    todos,
+                    item != '' && lastItemSelected
+                  )}
+                  totalTasks={item !== '' ? todos.length + 1 : todos.length}
+                />
+              </Box>
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+              {todos.map((todo: any, index: number) => (
+                <SwipeableContainer
+                  key={index}
+                  todo={todo}
+                  todos={todos}
+                  setTodos={setTodos}
+                  swipedItemId={swipedItemId}
+                  setSwipedItemId={setSwipedItemId}
+                />
+              ))}
+
+              <Pressable
+                mb="$32"
+                px="$6"
+                $md-mb={0}
+                onPress={() => {
+                  addTodo();
+                  setTimeout(() => {
+                    if (inputRef?.current) {
+                      inputRef?.current.focus();
+                    }
+                  }, 100);
+                }}>
+                <HStack alignItems="center" mt="$4">
+                  <Icon as={AddIcon} color="$secondary600" />
+                  <Text ml="$2" fontSize="$sm">
+                    Add Task
+                  </Text>
+                </HStack>
+              </Pressable>
+              <Link sx={{
+                ":hover":{
+                  _text:{
+                    color: 'red'
+                  }
+                }
+              }}>
+              </Link>
+            </StyledScrollView>
+          </StyledGestureHandlerRootView>
+        </StyledSafeAreaView>
+      </StyledKeyboardAvoidingView>
+  );
+};
 
 export default App;
