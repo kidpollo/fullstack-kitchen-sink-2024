@@ -3,17 +3,6 @@
 # This is the configuration for Terragrunt, a thin wrapper for Terraform that helps keep your code DRY and
 # maintainable: https://github.com/gruntwork-io/terragrunt
 # ---------------------------------------------------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------------------------------------------------
-# Include configurations that are common used across multiple environments.
-# ---------------------------------------------------------------------------------------------------------------------
-
-# Include the root `terragrunt.hcl` configuration. The root configuration contains settings that are common across all
-# components and environments, such as how to configure remote state.
-include "root" {
-  path = find_in_parent_folders()
-}
-
 terraform {
   source = "../../../../../modules/todo-api"
 }
@@ -24,7 +13,7 @@ locals {
 }
 
 dependency "todo_lambda" {
-  config_path = "../todo_ts_lambda" # relative path to the dependency's t
+  config_path = "../todo_ts_lambda"
   mock_outputs = {
     lambda_function_arn = "arn:aws:lambda:us-east-1:123456789012:function:todo-lambda"
   }

@@ -27,8 +27,8 @@ include "root" {
 # Include the envcommon configuration for the component. The envcommon
 # configuration contains settings that are common for the component across all
 # environments.
-include "todo_ts_package" {
-  path   = "${dirname(find_in_parent_folders())}/_envcommon/todo_ts_package.hcl"
+include "todo_api" {
+  path   = "${dirname(find_in_parent_folders())}/_envcommon/todo_api.hcl"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

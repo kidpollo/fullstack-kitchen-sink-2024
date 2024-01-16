@@ -10,9 +10,10 @@ terraform {
   extra_arguments "common_vars" {
     commands = get_terraform_commands_that_need_vars()
 
-    arguments = [
-      "-var-file=${get_parent_terragrunt_dir()}/global.tfvars"
-    ]
+    # Load vars available to all configurations if needed
+    # arguments = [
+    #   "-var-file=${get_parent_terragrunt_dir()}/global.tfvars"
+    # ]
   }
 
   extra_arguments "aws_profile" {
@@ -33,7 +34,7 @@ terraform {
 }
 
 locals {
-  project_name = "mono-starter" // TODO: Replace with your project name
+  project_name = "todo-fullstack-kitchen-sink"
 
   # Automatically load account-level variables
   account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
