@@ -30,3 +30,9 @@ variable "package_handler" {
 variable "package_content_base64sha256" {
   description = "The base64 encoded sha256 hash of the Lambda package."
 }
+
+variable "lambda_env_vars" {
+  description = "Environment variables for the Lambda function"
+  type        = map(string)
+  default     = {}
+}

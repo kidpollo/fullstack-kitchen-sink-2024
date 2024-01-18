@@ -22,9 +22,20 @@ dependency "todo_ts_package" {
   }
 }
 
+dependency "todo_dynamodb" {
+  config_path = "../todo_ddb_table"
+  mock_outputs = {
+    table_name = "todo-ddb-table"
+  }
+}
+
+
 inputs = merge(dependency.todo_ts_package.outputs, {
   function_name = "todo-ts-lambda"
   aws_region = local.region_vars.locals.aws_region
   lambda_path = "${get_repo_root()}/ts-lambda-backend"
   env = local.env_vars.locals.environment
+  lambda_env_vars = {
+    TODOS_TABLE_NAME = dependency.todo_dynamodb.outputs.table_name
+  }
 })

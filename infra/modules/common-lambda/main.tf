@@ -23,6 +23,7 @@ locals {
   package_runtime = var.package_runtime
   package_handler = var.package_handler
   package_content_base64sha256 = var.package_content_base64sha256
+  lambda_env_vars = var.lambda_env_vars
 }
 
 # Create an IAM execution role for the Lambda function.
@@ -86,15 +87,11 @@ resource "aws_lambda_function" "lambda_fn" {
   source_code_hash = local.package_content_base64sha256
 
   environment {
-    variables = {
-      LOG_LEVEL = local.lambda_log_level
-    }
-  }
-
-  lifecycle {
-    # Terraform will any ignore changes to the
-    # environment variables after the first deploy.
-    ignore_changes = [environment]
+    variables = merge(
+      {
+        LOG_LEVEL = local.lambda_log_level
+      },
+      local.lambda_env_vars)
   }
 }
 
@@ -108,4 +105,8 @@ resource "aws_cloudwatch_log_group" "lambda_fn" {
 
 output "lambda_function_arn" {
   value = aws_lambda_function.lambda_fn.arn
+}
+
+output "lambda_role_name" {
+  value = aws_iam_role.execution_role.name
 }
