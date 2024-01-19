@@ -42,6 +42,11 @@ module "api_gateway" {
       payload_format_version = "2.0"
     }
 
+    "PUT /todo/{id}" = {
+      lambda_arn             = local.lambda_arn
+      payload_format_version = "2.0"
+    }
+
     "DELETE /todo/{id}" = {
       lambda_arn             = local.lambda_arn
       payload_format_version = "2.0"

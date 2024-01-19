@@ -5,6 +5,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.131",
     "@types/bun": "latest",
+    "@types/uuid": "^9.0.7",
     "esbuild": "^0.19.11"
   },
   "scripts": {
@@ -16,6 +17,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.490.0"
+    "@aws-sdk/client-dynamodb": "^3.490.0",
+    "uuid": "^9.0.1"
   }
 }

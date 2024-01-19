@@ -64,9 +64,44 @@ https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example?tab=re
 
 The modules are all included here for reference purposes.
 
+## Backend
+
+## Todo API lambda handler (ts-lambda-handler)
+
+Simple lambda handler for all endpoints of the Todo API. The API
+endpoint should be available from the Terraform output. The Terragrunt apply
+command builds and deploys the lambda automatically.
+
+### Create Todo Item (POST /todo)
+
+```bash
+curl -X POST https://<api-endpoint>/todo \
+     -H "Content-Type: application/json" \
+     -d '{"todo": "Sample Todo Item", "is_done": false}'
+```
+
+### Retrieve All Todo Items (GET /todo)
+
+```bash
+curl -X GET https://<api-endpoint>/todo
+```
+
+### Update Todo Item (PUT /todo/{id})
+
+``` bash
+curl -X PUT https://<api-endpoint>/todo/{id} \
+     -H "Content-Type: application/json" \
+     -d '{"todo": "Updated Todo Item Text", "is_done": true}'
+```
+
+### Delete Todo Item (DELETE /todo/{id})
+
+```bash
+curl -X DELETE https://<api-endpoint>/todo/{id}
+```
+
 ## Frontend
 
-TODO: describe
 React native, TS with business logic using Krell
 
 ``` bash
@@ -109,16 +144,3 @@ bun start
 bun ios # new terminal
 ```
 
-## Backend
-
-### Python Lambda
-
-```bash
-python -m venv .venv
-source .venv/bin/activat
-cd python-lambda-backend
-pip install -r requirements.txt
-```
-
-
-## TS Lambda
