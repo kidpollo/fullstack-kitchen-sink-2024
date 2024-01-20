@@ -1,6 +1,6 @@
 (ns todo-app.core
-  (:require [uix.core :refer [#_defui $]]
-            #_[react-native :as rn]))
+  (:require [uix.core :refer [$]]
+            [todo-app.todo-context :refer [todo-provider]]))
 
 (def gluestack-themed (js/require "@gluestack-ui/themed"))
 (def gluestack-provider (.-GluestackUIProvider gluestack-themed))
@@ -12,4 +12,5 @@
   [& _args]
   ($ gluestack-provider
      {:config gluestack-config}
-     ($ (.-default (js/require "../../App.tsx")))))
+     ($ todo-provider
+        ($ (.-default (js/require "../../App.tsx"))))))
