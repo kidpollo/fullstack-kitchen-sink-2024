@@ -77,7 +77,7 @@ command builds and deploys the lambda automatically.
 ```bash
 curl -X POST https://<api-endpoint>/todo \
      -H "Content-Type: application/json" \
-     -d '{"todo": "Sample Todo Item", "is_done": false}'
+     -d '{"todo": "Sample Todo Item", "completed": false}'
 ```
 
 ### Retrieve All Todo Items (GET /todo)
@@ -91,7 +91,7 @@ curl -X GET https://<api-endpoint>/todo
 ``` bash
 curl -X PUT https://<api-endpoint>/todo/{id} \
      -H "Content-Type: application/json" \
-     -d '{"todo": "Updated Todo Item Text", "is_done": true}'
+     -d '{"todo": "Updated Todo Item Text", "completed": true}'
 ```
 
 ### Delete Todo Item (DELETE /todo/{id})
