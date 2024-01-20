@@ -25,7 +25,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           const unmarshalledItem = unmarshall(item);
           return {
             id: unmarshalledItem.SK,  // Rename SK to id
-            todo: unmarshalledItem.todo,
+            task: unmarshalledItem.task,
             completed: unmarshalledItem.completed,
             created_at: unmarshalledItem.created_at,
             updated_at: unmarshalledItem.updated_at
@@ -52,7 +52,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
               PK: 'todo', // Partition key
               SK: todoId,
               created_at: new Date().toISOString(),
-              todo: body.todo,
+              task: body.task,
               completed: body.completed || false,
             };
 
@@ -80,14 +80,14 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
               PK: 'todo',
               SK: todoId
             }),
-            UpdateExpression: 'SET #todo = :todo, #completed = :completed, #updated_at = :updated_at',
+            UpdateExpression: 'SET #task = :task, #completed = :completed, #updated_at = :updated_at',
             ExpressionAttributeNames: {
-              '#todo': 'todo',
+              '#task': 'task',
               '#completed': 'completed',
               '#updated_at': 'updated_at',
             },
             ExpressionAttributeValues: marshall({
-              ':todo': body.todo,
+              ':task': body.task,
               ':completed': body.completed,
               ':updated_at': new Date().toISOString()
             }),

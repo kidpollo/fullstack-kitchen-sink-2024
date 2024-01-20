@@ -12,7 +12,8 @@
   [{:keys [children]}]
   (let [[todos, _set-todos] (uix/use-state [])]
     ;; The todo business logic goes here
-    ($ TodoContext.Provider (clj->js {:value
-                                      {:todos todos
-                                       :fn (fn [] (js/console.log "hello"))}})
+    ($ TodoContext.Provider
+       (clj->js {:value
+                 {:todos todos
+                  :fn (fn [] (js/console.log "hello"))}})
        children)))
