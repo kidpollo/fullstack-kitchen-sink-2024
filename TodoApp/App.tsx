@@ -4,6 +4,9 @@
  *
  * @format
  */
+if (__DEV__) {
+    import("./ReactotronConfig").then(() => console.log("Reactotron Configured"));
+}
 
 import {
     StyledSafeAreaView,
@@ -26,26 +29,52 @@ import {
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useRef, useContext } from 'react';
-import { getCompletedTasks, getDay, defaultTodos } from './utils';
+import { getCompletedTasks, getDay } from './utils';
+
+type Todo = {
+    id: string;
+    task: string;
+    created_at: string;
+    updated_at?: string;
+    completed: boolean;
+    modified?: boolean; // Optional property to track modifications
+};
 
 const App = () => {
-    const { todos: t } = todo_app.todo_context.useTodos();
+    const { todos, setTodos } = todo_app.todo_context.useTodos();
     const [item, setItem] = useState('');
-    const [todos, setTodos] = useState(defaultTodos);
     const [swipedItemId, setSwipedItemId] = useState(null);
     const [lastItemSelected, setLastItemSelected] = useState(false);
     const inputRef = useRef(null);
+
+    const updateTodos = (newState: Todo[] | ((todos: Todo[]) => Todo[])) => {
+        setTodos((currentTodos: Todo[]) => {
+            // Determine if newState is a function or a new state value
+            const updatedState = typeof newState === 'function' ? newState(currentTodos) : newState;
+
+            // Iterate over the todos to check for changes and mark as modified
+            return updatedState.map(todo => {
+                const currentTodo = currentTodos.find(ct => ct.id === todo.id);
+                // Check if the todo item exists and has changes
+                if (currentTodo && JSON.stringify(currentTodo) !== JSON.stringify(todo)) {
+                    return { ...todo, modified: true };
+                }
+                return todo;
+            });
+        });
+    };
 
     const addTodo = () => {
         const lastTodo = todos[todos.length - 1];
 
         if (lastTodo.task !== '') {
-            setTodos([
+            updateTodos([
                 ...todos,
                 {
                     id: uuidv4(),
                     task: '',
                     completed: false,
+                    created_at: new Date().toISOString(),
                 },
             ]);
             setItem('');
@@ -98,7 +127,7 @@ const App = () => {
                                 key={index}
                                 todo={todo}
                                 todos={todos}
-                                setTodos={setTodos}
+                                setTodos={updateTodos}
                                 swipedItemId={swipedItemId}
                                 setSwipedItemId={setSwipedItemId}
                             />

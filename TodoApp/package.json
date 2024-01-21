@@ -14,6 +14,7 @@
     "@gluestack-style/react": "^1.0.39",
     "@gluestack-ui/config": "latest",
     "@gluestack-ui/themed": "^1.0.35",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-device-info": "^8.1.2",
@@ -39,6 +40,7 @@
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "18.2.0",
+    "reactotron-react-native": "^5.0.4",
     "typescript": "5.0.4"
   },
   "engines": {
