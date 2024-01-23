@@ -25,6 +25,7 @@ import {
     AddIcon,
     Box,
     Link,
+    Spinner,
 } from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
@@ -42,7 +43,7 @@ type Todo = {
 };
 
 const App = () => {
-    const { todos, setTodos } = todo_app.todo_context.useTodos();
+    const { todos, setTodos, isSyncing } = todo_app.todo_context.useTodos();
     const [item, setItem] = useState('');
     const [swipedItemId, setSwipedItemId] = useState(null);
     const [lastItemSelected, setLastItemSelected] = useState(false);
@@ -112,9 +113,12 @@ const App = () => {
                         $md-borderRadius="$sm"
                         flexDirection="column">
                         <Box px="$6">
-                            <Text fontSize="$xl">
-                                {getDay()}
-                            </Text>
+                            <Box flexDirection="row" justifyContent="space-between">
+                                <Text fontSize="$xl" >
+                                    {getDay()}
+                                </Text>
+                                {isSyncing && <Spinner size="small" />}
+                            </Box>
                             <ProgressBar
                                 completedTasks={getCompletedTasks(
                                     todos,
@@ -123,7 +127,6 @@ const App = () => {
                                 totalTasks={item !== '' ? todos.length + 1 : todos.length}
                             />
                         </Box>
-
                         {todos.map((todo: any, index: number) => (
                             <SwipeableContainer
                                 key={index}

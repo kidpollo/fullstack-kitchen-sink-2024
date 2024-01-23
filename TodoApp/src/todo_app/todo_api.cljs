@@ -16,7 +16,7 @@
         (p/then #(.json %))))
 
 (defn update-todo [todo]
-  (p/-> (js/fetch (str todo-api-url (:id todo))
+  (p/-> (js/fetch (str todo-api-url "/" (get (js->clj todo) "id"))
                   (clj->js {:method "PUT"
                             :body (js/JSON.stringify todo)
                             :headers {"Content-Type" "application/json"}}))
