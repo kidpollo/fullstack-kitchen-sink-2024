@@ -2,4 +2,5 @@
  {io.vouch/krell {:git/url "https://github.com/vouch-opensource/krell.git"
                   :sha "bdd627735e05d2afd08c3dfd5b3ea7d9be93554e"}
   com.pitch/uix.core {:mvn/version "1.0.1"}
-  com.pitch/uix.dom {:mvn/version "1.0.1"}}}
+  com.pitch/uix.dom {:mvn/version "1.0.1"}
+  funcool/promesa {:mvn/version "11.0.678"}}}

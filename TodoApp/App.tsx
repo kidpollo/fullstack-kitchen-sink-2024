@@ -28,7 +28,7 @@ import {
 } from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import { getCompletedTasks, getDay } from './utils';
 
 type Todo = {
@@ -38,6 +38,7 @@ type Todo = {
     updated_at?: string;
     completed: boolean;
     modified?: boolean; // Optional property to track modifications
+    new?: boolean; // Optional property to track new items
 };
 
 const App = () => {
@@ -58,8 +59,9 @@ const App = () => {
                 // Check if the todo item exists and has changes
                 if (currentTodo && JSON.stringify(currentTodo) !== JSON.stringify(todo)) {
                     return { ...todo, modified: true };
+                } else {
+                    return { ...todo, new: true };
                 }
-                return todo;
             });
         });
     };
