@@ -97,7 +97,7 @@ const App = () => {
     const addTodo = () => {
         const lastTodo = todos[todos.length - 1];
 
-        if (lastTodo.task !== '') {
+        if (!lastTodo || lastTodo.task !== '') {
             updateTodos([
                 ...todos,
                 {
