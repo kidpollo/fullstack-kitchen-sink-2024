@@ -15,8 +15,7 @@ const Hoverable = ({ children, ...props }: any) => {
           bg: "$backgroundDark700",
         },
       }}
-      {...props}
-    >
+      {...props} >
       {children}
     </Pressable>
   );
