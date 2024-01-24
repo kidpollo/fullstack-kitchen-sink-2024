@@ -3,6 +3,9 @@
             [promesa.core :as p]
             [todo-app.todo-api :as todo-api]))
 
+;; NOTE: All the messy clj to js conversion stuff can be cleaned up
+;; with https://github.com/applied-science/js-interop
+
 (def TodoContext (uix/create-context nil))
 
 (defn ^:export useTodos
@@ -13,16 +16,18 @@
 (defn todo-reducer
   "Updates the todos based on the action"
   [todos action]
-  (-> (case (:type action)
-        :set (:todos action)
-        ;; We really arent using other actions but this is how you would do it
-        :add (conj todos (:todo action))
-        :remove (remove #(= (:todo action) %) todos)
-        :toggle (mapv #(if (= (:todo action) %)
-                         (assoc % :done (not (:done %)))
-                         %)
-                      todos)
-        todos)))
+  (->> (case (:type action)
+         :set (:todos action)
+         ;; We really arent using other actions but this is how you would do it
+         :add (conj todos (:todo action))
+         :remove (remove #(= (:todo action) %) todos)
+         :toggle (mapv #(if (= (:todo action) %)
+                          (assoc % :done (not (:done %)))
+                          %)
+                       todos)
+         todos)
+       (sort-by #(get (js->clj %) "created-at"))
+       clj->js))
 
 (defn sync-todos
   "Gets new and modified todos and sync them with the server"

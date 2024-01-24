@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Swipeable } from "react-native-gesture-handler";
-import {EvilIconsIcon} from "react-native-vector-icons";
 import { Hoverable } from "./Hoverable";
-import { Button, Input, InputField,Checkbox, CheckIcon, Icon } from "@gluestack-ui/themed";
+import { Button, Input, Checkbox, CheckIcon, Icon, TrashIcon } from "@gluestack-ui/themed";
 
 const SwipeableContainer = ({
   todo,
@@ -10,13 +9,13 @@ const SwipeableContainer = ({
   setTodos,
   swipedItemId,
   setSwipedItemId,
-}) => {
+}: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [lastTap, setLastTap] = useState(null);
   const [editItem, setEditItem] = useState(todo.task);
   const [editItemId, setEditItemId] = useState(null);
-  const swipeableRef = useRef(null);
-  const inputRef = useRef(null);
+  const swipeableRef = useRef<any>(null);
+  const inputRef = useRef<any>(null);
 
   useEffect(() => {
     if (swipedItemId !== null && swipedItemId !== todo.id) {
@@ -25,11 +24,11 @@ const SwipeableContainer = ({
   });
 
   const handleDelete = (id: any) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    const updatedTodos = todos.filter((todo: any) => todo.id !== id);
     setTodos(updatedTodos);
   };
   const toggleCheckbox = (id: any) => {
-    const updatedTodos = todos.map((todo) =>
+    const updatedTodos = todos.map((todo: any) =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updatedTodos);
@@ -37,7 +36,7 @@ const SwipeableContainer = ({
   const handleEdit = (id: any) => {
     setEditItemId(null);
     if (editItem !== "") {
-      const updatedTodos = todos.map((todo) =>
+      const updatedTodos = todos.map((todo: any) =>
         todo.id === id ? { ...todo, task: editItem } : todo
       );
       setTodos(updatedTodos);
@@ -50,10 +49,10 @@ const SwipeableContainer = ({
     if (!lastTap) {
       setLastTap(now);
     } else {
-      if (now - lastTap < 700) {
+      if (now - lastTap < 500) {
         setEditItemId(todo.id);
         setTimeout(() => {
-          inputRef.current.focus();
+              inputRef.current.focus();
         }, 100);
       }
       setLastTap(null);
@@ -83,7 +82,7 @@ const SwipeableContainer = ({
         onPress={() => handleDelete(todo.id)}
         focusable={false}
       >
-        <Icon as={EvilIconsIcon} name="trash" size={18} />
+        <Icon as={TrashIcon} name="trash" size={18} />
       </Button>
     );
   };
@@ -132,7 +131,7 @@ const SwipeableContainer = ({
             w="$full"
             h={22}
           >
-            <InputField
+            <Input.Input
               pl="$2"
               editable={!isOpen && editItemId === todo.id}
               value={editItem}
@@ -140,7 +139,7 @@ const SwipeableContainer = ({
               fontSize="$sm"
               fontWeight="$normal"
               textDecorationLine={todo.completed ? "line-through" : "none"}
-              onChangeText={(val) => setEditItem(val)}
+              onChangeText={(val: any) => setEditItem(val)}
               onSubmitEditing={() => handleEdit(todo.id)}
               onBlur={() => handleEdit(todo.id)}
               autoComplete="off"

@@ -127,6 +127,7 @@ const App = () => {
                                 totalTasks={item !== '' ? todos.length + 1 : todos.length}
                             />
                         </Box>
+
                         {todos.map((todo: any, index: number) => (
                             <SwipeableContainer
                                 key={index}
