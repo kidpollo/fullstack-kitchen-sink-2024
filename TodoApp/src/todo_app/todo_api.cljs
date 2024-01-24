@@ -21,3 +21,8 @@
                             :body (js/JSON.stringify todo)
                             :headers {"Content-Type" "application/json"}}))
         (p/then #(.json %))))
+
+(defn delete-todo [todo]
+  (p/-> (js/fetch (str todo-api-url "/" (get (js->clj todo) "id"))
+                  (clj->js {:method "DELETE"}))
+        (p/then #(.json %))))

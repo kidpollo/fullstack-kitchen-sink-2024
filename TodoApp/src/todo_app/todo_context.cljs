@@ -26,17 +26,19 @@
                           %)
                        todos)
          todos)
-       (sort-by #(get (js->clj %) "created-at"))
+       (sort-by #(get (js->clj %) "created_at"))
        clj->js))
 
 (defn sync-todos
   "Gets new and modified todos and sync them with the server"
   [set-todos set-is-syncing current-todos]
   (set-is-syncing true)
-  (p/let [new-todos (filter #(= (get (js->clj %) "new") true) current-todos)
+  (p/let [new-todos (filter #(get (js->clj %) "newTodo") current-todos)
           modified-todos (filter #(get (js->clj %) "modified") current-todos)
+          deleted-todos (filter #(get (js->clj %) "deleted") current-todos)
           _ (p/all (map #(todo-api/create-todo %) new-todos))
           _ (p/all (map #(todo-api/update-todo %) modified-todos))
+          _ (p/all (map #(todo-api/delete-todo %) deleted-todos))
           synced-todos (todo-api/get-todos)
           _ (set-todos synced-todos)]
     (set-is-syncing false)))

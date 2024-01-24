@@ -39,7 +39,8 @@ type Todo = {
     updated_at?: string;
     completed: boolean;
     modified?: boolean; // Optional property to track modifications
-    new?: boolean; // Optional property to track new items
+    newTodo?: boolean; // Optional property to track new items
+    deleted?: boolean; // Optional property to track deleted items
 };
 
 const App = () => {
@@ -54,16 +55,42 @@ const App = () => {
             // Determine if newState is a function or a new state value
             const updatedState = typeof newState === 'function' ? newState(currentTodos) : newState;
 
+            // Find deleted items
+            const deletedItems = currentTodos.filter(
+                currentTodo => !updatedState.some(updatedTodo => updatedTodo.id === currentTodo.id)
+            );
+
+            // Mark deleted items with deleted flag
+            if (deletedItems.length > 0) {
+                deletedItems.forEach(deletedItem => {
+                    deletedItem.deleted = true;
+                });
+            }
+
+            // Find new items
+            const newItems = updatedState.filter(
+                updatedTodo => !currentTodos.some(currentTodo => currentTodo.id === updatedTodo.id)
+            );
+
+            // Mark new items with newTodo flag
+            if (newItems.length > 0) {
+                newItems.forEach(newItem => {
+                    newItem.newTodo = true;
+                });
+            }
+
             // Iterate over the todos to check for changes and mark as modified
-            return updatedState.map(todo => {
+            const updatedTodos = updatedState.map(todo => {
                 const currentTodo = currentTodos.find(ct => ct.id === todo.id);
                 // Check if the todo item exists and has changes
                 if (currentTodo && JSON.stringify(currentTodo) !== JSON.stringify(todo)) {
                     return { ...todo, modified: true };
-                } else {
-                    return { ...todo, new: true };
                 }
+                return todo;
             });
+
+            // concat deleted items with updated/new items
+            return updatedTodos.concat(deletedItems);
         });
     };
 
@@ -78,6 +105,7 @@ const App = () => {
                     task: '',
                     completed: false,
                     created_at: new Date().toISOString(),
+                    newTodo: true,
                 },
             ]);
             setItem('');
