@@ -1,17 +1,30 @@
 # AWS Fullstack App Kitchen Sink 2024
 
 This is a reference architecture for what I consider some best practices for a
-Fullstack app based on my previous experiences.
+Fullstack app based on my latest experiences.
 
 This is built as a mono-repo that includes infrastructure, front-end, and
 back-end. More details on that later. While mono-repos are excellent in some
-situations, it does not mean this repo is intended to be cloned to start a new
-project. It references best practices around using Terraform, an AWS
-Lambda-based backend, and a React Native frontend. However, it should be a great
-starting point for a React Native-based app with a straightforward
+situations, it does not mean this repo is intended to be cloned (but you could
+:D) to start a new project. It references best practices around using Terraform,
+an AWS Lambda-based backend, and a React Native frontend. However, it should be
+a great starting point for a React Native-based app with a straightforward
 request/response API using AWS lambda.
 
-This also works as a helpful tech radar of software and libraries.
+This repo also works as a helpful tech radar of software practices and libraries
+that are relevant these days. I don't dislike frameworks. I think they can
+provide great value at times. However, flexibility is critical for scaling and
+evolving modern apps and infrastructures. Terraform and Terragrunt + the current
+state of the Serverless capabilities provided by AWS, make for a highly
+compelling combination that offers ultimate flexibility with some of the
+niceties of frameworks without the bloat.
+
+I realize a setup like this is not the most beginner-friendly as it would
+require comfort level with tooling more familiar to infrastructure and DevOps
+folks. However, I find that DevOps, infrastructure, and platform teams spend a
+lot of their energy converting developer work to be compatible with
+Gitops-compatible approaches, so why not embrace modern practices that
+span teams from the start?
 
 ## Tools
 
@@ -53,16 +66,17 @@ credential_process = /opt/homebrew/bin/aws-sso -u open -S "Default" process --ar
 
 - Terragrunt to keep Terraform DRY.
 - Fully immutable environments, easily configurable.
-- Serverless environment using lambdas in various languages.
-- Extensible and modular
+- Used to define infrastructure as well as package and deploy the backend.
 
 Inspired by: https://github.com/gruntwork-io/terragrunt-infrastructure-live-example.
 
-It is not ideal to have modules as part of a mono repo for infrastructure
-modules; see:
+The infrastructure modules are also included in the mono-repo; however it is not
+always ideal to have modules as part of a mono repo; see:
 https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example?tab=readme-ov-file#disadvantages-of-a-monorepo-for-terraform-modules
 
-The modules are all included here for reference purposes.
+The modules handle building, packaging, and deploying the backend to AWS. Having
+these steps coupled as part of the Terraform code provides a less chaotic
+approach to Gitops or CI/CD-based releases.
 
 ## Backend
 
@@ -102,7 +116,7 @@ curl -X DELETE https://<api-endpoint>/todo/{id}
 
 ## Frontend
 
-React native, TS with business logic using Krell
+TODO
 
 ``` bash
 bunx react-native@latest init TodoApp
