@@ -1,7 +1,9 @@
 (ns todo-app.todo-api
   (:require [promesa.core :as p]))
 
-(def todo-api-url "https://jkbzi1llhc.execute-api.us-west-2.amazonaws.com/todo")
+(def config (js/require "react-native-config"))
+
+(def todo-api-url (get-in (js->clj config) ["Config" "TODO_API_URL"]))
 
 (defn get-todos []
   (p/-> (js/fetch todo-api-url

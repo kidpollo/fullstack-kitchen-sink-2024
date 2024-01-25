@@ -67,3 +67,6 @@ yarn-error.log
 
 # clojure
 target
+
+# env
+.env
