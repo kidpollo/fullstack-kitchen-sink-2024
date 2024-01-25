@@ -184,7 +184,13 @@ written in Clojurescript that handles the communication with the backend and the
 business logic. I could expand on this much more, but I'll let you look at the
 `src` folder on the Frontend app to see how simple the integration is. I think
 the steps to get a setup similar to this one are not too complicated. I am sure
-there could be some automation around this. See below:
+there could be some automation around this. See the configuration below:
+
+### Setup
+
+The following is all you need to get the Krell wrapper and start writing modern
+React with UIX. These changes have already been applied in this repo.
+
 
 ``` bash
 bunx react-native@latest init TodoApp
@@ -217,15 +223,25 @@ cat  << EOF > src/todo_app/core.cljs
 EOF
 clj -M -m cljs.main --install-deps
 rm package-lock.json
+```
 
-# run locally
-# assuming you deployed the backend with the terragrunt command
-# rename .env.dev to .env and modify with the API url output once the infra is deployed
-# Its important to set up the file befor running the `pod-install` command
+### Local Run
+
+Assuming you deployed the backend with the Terragrunt command above, copy
+`.env.dev` to `.env` inside the `Todo` folder and set the `TODO_API_URL=` in the
+file with the `api_gateway_invoke_url=` output from the `terragrunt run-alloutput`
+command. (TODO: automate this step)
+
+```bash
+# run these two when deps change
 bun install
 bunx pod-install
+# Day to day operation
 clj -M -m krell.main -co build.edn -c -r # new terminal
 bun start
 bun ios # new terminal
 ```
+
+
+
 
