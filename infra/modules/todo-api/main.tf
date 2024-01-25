@@ -106,3 +106,7 @@ resource "aws_iam_role_policy_attachment" "dynamoDBLambdaPolicyAttachment" {
   role       = local.lambda_role_name
   policy_arn = aws_iam_policy.dynamoDBLambdaPolicy.arn
 }
+
+output "api_gateway_invoke_url" {
+  value = module.api_gateway.apigatewayv2_api_api_endpoint
+}

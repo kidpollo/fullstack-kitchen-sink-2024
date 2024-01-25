@@ -1,15 +1,16 @@
-# AWS Fullstack App Kitchen Sink 2024
+# AWS Fullstack App Kitchen Sink Repo 2024
 
-This is a reference architecture for what I consider some best practices for a
-Fullstack app based on my latest experiences.
+This repo contains a reference architecture of what I consider to be some best
+practices for a Fullstack app based on my latest experiences.
 
-This is built as a mono-repo that includes infrastructure, front-end, and
-back-end. More details on that later. While mono-repos are excellent in some
-situations, it does not mean this repo is intended to be cloned (but you could
-:D) to start a new project. It references best practices around using Terraform,
-an AWS Lambda-based backend, and a React Native frontend. However, it should be
-a great starting point for a React Native-based app with a straightforward
-request/response API using AWS lambda.
+This mono-repo includes infrastructure, front-end, and back-end. Mono-repos are
+great for apps and services that are best released in lock-step, among many
+other [benefits and drawbacks](https://medium.com/@alessandro.traversi/monorepos-advantages-and-disadvantages-233c1b7146c2).
+
+It references best practices around using Terraform, an AWS Lambda-based
+backend, and a React Native frontend. However, it should be a great starting
+point for a React Native-based app with a straightforward request/response API
+using AWS lambda.
 
 This repo also works as a helpful tech radar of software practices and libraries
 that are relevant these days. I don't dislike frameworks. I think they can
@@ -78,13 +79,46 @@ The modules handle building, packaging, and deploying the backend to AWS. Having
 these steps coupled as part of the Terraform code provides a less chaotic
 approach to Gitops or CI/CD-based releases.
 
+We must travel to the target environment folder to deploy this infrastructure to
+AWS and run the Terragrunt command. Assuming we have our `noprod` profile set,
+everything should work. Everything in this repo should fit nicely in the free
+tier. To use your own account, modify `account.hcl` with the account-id you want
+to target. I recommend creating a sub-account and setting up
+[SSO](https://medium.com/@pushkarjoshi0410/how-to-set-up-aws-cli-with-aws-single-sign-on-sso-acf4dd88e056)
+for it. If you set up the profile like the above, the `aws-sso` tool will trigger the
+auth flow automatically.
+
+```bash
+cd infra/live/nonprod/us-west-2/stage
+terragrunt run-all apply
+terragrunt run-all output
+```
+
+NOTE: Save the output so you can use the resulting API URL to configure the frontend
+
+### Local infra
+
+TODO
+
 ## Backend
 
-## Todo API lambda handler (ts-lambda-handler)
+### Streaming services
 
-Simple lambda handler for all endpoints of the Todo API. The API
-endpoint should be available from the Terraform output. The Terragrunt apply
-command builds and deploys the lambda automatically.
+TODO
+
+### Todo API lambda handler (ts-lambda-handler)
+
+Modern apps still need "classic" APIs with request-response flows. Previously,
+developers spent time and effort on frameworks dealing with orthogonal concerns
+like routing and authentication. Building individual handlers for business logic
+is a much more scaleable and efficient approach, leading to time spent on what
+matters.
+
+Here, we use a simple lambda handler for all endpoints of the Todo API. The API
+endpoint should be made available by the Terraform output. The Terragrunt apply
+command builds and deploys the lambda automatically, sets up the API Gateway,
+and configures the routes described in our Terraform modules. No need for any
+bloat from a framework; let infrastructure be infrastructure.
 
 ### Create Todo Item (POST /todo)
 
@@ -116,7 +150,41 @@ curl -X DELETE https://<api-endpoint>/todo/{id}
 
 ## Frontend
 
-TODO
+Here, we'll have a straightforward, modern React Native application with
+some Clojure spice! I love Clojure and Clojurescript. There was a time when
+React was new and exciting, but the Clojurescriop community realized there was a
+lot to improve on the core concepts of React. Class components were cumbersome,
+and state management was messy and too complex.
+[Reagent](https://reagent-project.github.io/) and
+[Re-frame](https://day8.github.io/re-frame/) were a breath of fresh air at that
+time. Users love these projects. However, the onboarding process and the
+cognitive load of learning Clojure for some front-end engineers led to moderate
+adoption. I've seen organizations actively pull away from this as hiring and
+community support are not as strong as with other Frontend Dev communities. 
+
+With time, React has improved a lot; now, with
+[Hooks](https://medium.com/@matthill8286/embracing-modern-react-a-beginners-guide-to-react-hooks-2349fde20ce0),
+many of those original concerns addressed by the Clojurescript community are
+covered. Clojurescript has enhanced with time a lot. All of the limitations of
+it being tied to the JVM have been lifted, and many new projects and libraries
+have emerged. One of my favorites is
+[NBB](https://github.com/babashka/nbb)](https://github.com/babashka/nbb), which
+allows me to write fast scripts using CLJS directly on the NodeJS VM.
+
+Much to my surprise, I combined 2 of those newer projects to allow me to create
+a modern React application where I can use Clojurescript for what it is good at.
+Manipulating data and handling business logic with Clojure is a complete joy and
+requires far less code than equivalent JS/TS code. This is where
+[Krell](https://github.com/vouch-opensource/krell) and
+[UIX](https://github.com/pitch-io/uix) come to the rescue.
+
+Krell allows us to have Clojurescipt and JS/TS co-exist. I chose to do this by
+adding a simple wrapper using UIX that enables me to have a React context
+written in Clojurescript that handles the communication with the backend and the
+business logic. I could expand on this much more, but I'll let you look at the
+`src` folder on the Frontend app to see how simple the integration is. I think
+the steps to get a setup similar to this one are not too complicated. I am sure
+there could be some automation around this. See below:
 
 ``` bash
 bunx react-native@latest init TodoApp
@@ -151,6 +219,9 @@ clj -M -m cljs.main --install-deps
 rm package-lock.json
 
 # run locally
+# assuming you deployed the backend with the terragrunt command
+# rename .env.dev to .env and modify with the API url output once the infra is deployed
+# Its important to set up the file befor running the `pod-install` command
 bun install
 bunx pod-install
 clj -M -m krell.main -co build.edn -c -r # new terminal
