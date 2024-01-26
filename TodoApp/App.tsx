@@ -26,10 +26,14 @@ import {
     Box,
     Link,
     Spinner,
+    Input,
+    Button,
+    ButtonText,
+    InputField,
 } from '@gluestack-ui/themed';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { getCompletedTasks, getDay } from './utils';
 
 type Todo = {
@@ -44,11 +48,23 @@ type Todo = {
 };
 
 const App = () => {
+    const { user, login, logout } = todo_app.user_context.useUser();
     const { todos, setTodos, isSyncing } = todo_app.todo_context.useTodos();
     const [item, setItem] = useState('');
     const [swipedItemId, setSwipedItemId] = useState(null);
     const [lastItemSelected, setLastItemSelected] = useState(false);
     const inputRef = useRef(null);
+    const [username, setUsername] = useState('');
+
+    const handleLogin = () => {
+        login(username);
+    };
+
+    useEffect(() => {
+        if (user) {
+            setTodos([]);
+        }
+    }, [user]);
 
     const updateTodos = (newState: Todo[] | ((todos: Todo[]) => Todo[])) => {
         setTodos((currentTodos: Todo[]) => {
@@ -113,91 +129,115 @@ const App = () => {
         }
     };
 
-    return (
-        <StyledKeyboardAvoidingView
-            w="$full"
-            h="$full"
-            bg="$backgroundDark900"
-            behavior="padding"
-            keyboardVerticalOffset={60}>
-            <StyledSafeAreaView
-                $base-bg="$backgroundDark900"
-                $md-bg="$black"
+    if (user) {
+        return (
+            <StyledKeyboardAvoidingView
                 w="$full"
-                h="$full">
-                <StyledGestureHandlerRootView
+                h="$full"
+                bg="$backgroundDark900"
+                behavior="padding"
+                keyboardVerticalOffset={60}>
+                <StyledSafeAreaView
+                    $base-bg="$backgroundDark900"
+                    $md-bg="$black"
                     w="$full"
-                    minHeight="$full"
-                    $md-justifyContent="center"
-                    $md-alignItems="center"
-                    $md-bg="$black">
-                    <StyledScrollView
-                        pt="$6"
-                        pb="$10"
-                        bg="$backgroundDark900"
-                        $base-w="$full"
-                        $md-w={700}
-                        $md-maxHeight={500}
-                        $md-borderRadius="$sm"
-                        flexDirection="column">
-                        <Box px="$6">
-                            <Box flexDirection="row" justifyContent="space-between">
-                                <Text fontSize="$xl" >
-                                    {getDay()}
-                                </Text>
-                                {isSyncing && <Spinner size="small" />}
+                    h="$full">
+                    <StyledGestureHandlerRootView
+                        w="$full"
+                        minHeight="$full"
+                        $md-justifyContent="center"
+                        $md-alignItems="center"
+                        $md-bg="$black">
+                        <StyledScrollView
+                            pt="$6"
+                            pb="$10"
+                            bg="$backgroundDark900"
+                            $base-w="$full"
+                            $md-w={700}
+                            $md-maxHeight={500}
+                            $md-borderRadius="$sm"
+                            flexDirection="column">
+                            <Box px="$6">
+                                <Box flexDirection="row" justifyContent="space-between">
+                                    <Text fontSize="$xl" >
+                                        {getDay()}
+                                    </Text>
+                                    {isSyncing && <Spinner size="small" />}
+                                </Box>
+                                <ProgressBar
+                                    completedTasks={getCompletedTasks(
+                                        todos,
+                                        item != '' && lastItemSelected
+                                    )}
+                                    totalTasks={item !== '' ? todos.length + 1 : todos.length}
+                                />
                             </Box>
-                            <ProgressBar
-                                completedTasks={getCompletedTasks(
-                                    todos,
-                                    item != '' && lastItemSelected
-                                )}
-                                totalTasks={item !== '' ? todos.length + 1 : todos.length}
-                            />
-                        </Box>
 
-                        {todos.map((todo: any, index: number) => (
-                            <SwipeableContainer
-                                key={index}
-                                todo={todo}
-                                todos={todos}
-                                setTodos={updateTodos}
-                                swipedItemId={swipedItemId}
-                                setSwipedItemId={setSwipedItemId}
-                            />
-                        ))}
+                            {todos.map((todo: any, index: number) => (
+                                <SwipeableContainer
+                                    key={index}
+                                    todo={todo}
+                                    todos={todos}
+                                    setTodos={updateTodos}
+                                    swipedItemId={swipedItemId}
+                                    setSwipedItemId={setSwipedItemId}
+                                />
+                            ))}
 
-                        <Pressable
-                            mb="$32"
-                            px="$6"
-                            $md-mb={0}
-                            onPress={() => {
-                                addTodo();
-                                setTimeout(() => {
-                                    if (inputRef?.current) {
-                                        inputRef?.current.focus();
+                            <Pressable
+                                mb="$32"
+                                px="$6"
+                                $md-mb={0}
+                                onPress={() => {
+                                    addTodo();
+                                    setTimeout(() => {
+                                        if (inputRef?.current) {
+                                            inputRef?.current.focus();
+                                        }
+                                    }, 100);
+                                }}>
+                                <HStack alignItems="center" mt="$4">
+                                    <Icon as={AddIcon} color="$secondary600" />
+                                    <Text ml="$2" fontSize="$sm">
+                                        Add Task
+                                    </Text>
+                                </HStack>
+                            </Pressable>
+                            <Link sx={{
+                                ":hover": {
+                                    _text: {
+                                        color: 'red'
                                     }
-                                }, 100);
-                            }}>
-                            <HStack alignItems="center" mt="$4">
-                                <Icon as={AddIcon} color="$secondary600" />
-                                <Text ml="$2" fontSize="$sm">
-                                    Add Task
-                                </Text>
-                            </HStack>
-                        </Pressable>
-                        <Link sx={{
-                            ":hover": {
-                                _text: {
-                                    color: 'red'
                                 }
-                            }
-                        }}>
-                        </Link>
-                    </StyledScrollView>
-                </StyledGestureHandlerRootView>
-            </StyledSafeAreaView>
-        </StyledKeyboardAvoidingView>
+                            }}>
+                            </Link>
+                        </StyledScrollView>
+                    </StyledGestureHandlerRootView>
+                </StyledSafeAreaView>
+            </StyledKeyboardAvoidingView>
+        );
+    }
+
+    return (
+        <StyledSafeAreaView
+            $base-bg="$backgroundDark900"
+            $md-bg="$black"
+            w="$full"
+            h="$full">
+            <Box>
+                <Input >
+                    <InputField
+                        color="$white"
+                        value={username}
+                        onChangeText={(val: any) => { setUsername(val) }}
+                        placeholder="Username"
+                        type="text" />
+                </Input>
+                <Button title="Login" onPress={handleLogin}>
+                    <ButtonText color="$white">Login</ButtonText>
+                </Button>
+            </Box>
+        </StyledSafeAreaView>
     );
 };
 

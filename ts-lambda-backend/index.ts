@@ -8,7 +8,6 @@ const ddbClient = new DynamoDBClient();
 const tableName = process.env.TODOS_TABLE_NAME || "";
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  console.log(event);
   try {
     switch (event.requestContext.http.method) {
       case "GET":

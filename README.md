@@ -18,7 +18,7 @@ provide great value at times. However, flexibility is critical for scaling and
 evolving modern apps and infrastructures. Terraform and Terragrunt + the current
 state of the Serverless capabilities provided by AWS, make for a highly
 compelling combination that offers ultimate flexibility with some of the
-niceties of frameworks without the bloat.
+offerings of frameworks without the bloat.
 
 I realize a setup like this is not the most beginner-friendly as it would
 require comfort level with tooling more familiar to infrastructure and DevOps
@@ -26,10 +26,6 @@ folks. However, I find that DevOps, infrastructure, and platform teams spend a
 lot of their energy converting developer work to be compatible with
 Gitops-compatible approaches, so why not embrace modern practices that
 span teams from the start?
-
-
-https://github.com/kidpollo/fullstack-kitchen-sink-2024/assets/8182/6a65dffa-4d3d-497e-86a9-fca7de3ca67e
-
 
 ## Tools
 
@@ -156,7 +152,7 @@ curl -X DELETE https://<api-endpoint>/todo/{id}
 
 Here, we'll have a straightforward, modern React Native application with
 some Clojure spice! I love Clojure and Clojurescript. There was a time when
-React was new and exciting, but the Clojurescriop community realized there was a
+React was new and exciting, but the Clojurescript community realized there was a
 lot to improve on the core concepts of React. Class components were cumbersome,
 and state management was messy and too complex.
 [Reagent](https://reagent-project.github.io/) and

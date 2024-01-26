@@ -32,17 +32,18 @@
 
 (defn sync-todos
   "Gets new and modified todos and sync them with the server"
-  [set-todos set-is-syncing current-todos]
-  (set-is-syncing true)
-  (p/let [new-todos (filter #(get (js->clj %) "newTodo") current-todos)
-          modified-todos (filter #(get (js->clj %) "modified") current-todos)
-          deleted-todos (filter #(get (js->clj %) "deleted") current-todos)
-          _ (p/all (map #(todo-api/create-todo %) new-todos))
-          _ (p/all (map #(todo-api/update-todo %) modified-todos))
-          _ (p/all (map #(todo-api/delete-todo %) deleted-todos))
-          synced-todos (todo-api/get-todos)
-          _ (set-todos synced-todos)]
-    (set-is-syncing false)))
+  [set-todos set-is-syncing current-todos user]
+  (when user
+    (set-is-syncing true)
+    (p/let [new-todos (filter #(get (js->clj %) "newTodo") current-todos)
+            modified-todos (filter #(get (js->clj %) "modified") current-todos)
+            deleted-todos (filter #(get (js->clj %) "deleted") current-todos)
+            _ (p/all (map #(todo-api/create-todo %) new-todos))
+            _ (p/all (map #(todo-api/update-todo %) modified-todos))
+            _ (p/all (map #(todo-api/delete-todo %) deleted-todos))
+            synced-todos (todo-api/get-todos)
+            _ (set-todos synced-todos)]
+      (set-is-syncing false))))
 
 (defui todo-provider
   "Todo state provider business logic written in clojure script"
@@ -50,14 +51,17 @@
   (let [[todos, dispatch] (uix/use-reducer todo-reducer [])
         [is-syncing, set-is-syncing] (uix/use-state false)
         ;; extract the username from the user context
-        {{username "username"} "user"} (js->clj (useUser))
-        _ (js/console.log "username" username)
+        ;; using regular clojure destructuring as this context is defined by us
+        {user "user"} (js->clj (useUser))
         ;; Simple wrapper around sync-todos to apply local changes and sync
         set-todos (fn [new-state]
                     (let [new-todos (if (fn? new-state)
                                       (new-state todos)
                                       new-state)]
-                      (sync-todos #(dispatch {:type :set :todos %}) set-is-syncing new-todos)))
+                      (sync-todos #(dispatch {:type :set :todos %})
+                                  set-is-syncing
+                                  new-todos
+                                  user)))
         context {:todos todos ;; The todos state
                  :setTodos set-todos ;; Wrapper around sync-todos that works with local state
                  :isSyncing is-syncing}]
@@ -65,11 +69,10 @@
     (uix/use-effect
      (fn []
        ;; Sync todos on mount
-       (when username
-         (set-todos todos))
+       (set-todos todos)
        ;; Optionaly sync in regular intervals
        ;;(js/setInterval perform-sync 10000)
-       )[username]) ;; perform-sync on mount
+       )[]) ;; perform-sync on mount
 
     ;; The todo business logic goes here
     ($ TodoContext.Provider

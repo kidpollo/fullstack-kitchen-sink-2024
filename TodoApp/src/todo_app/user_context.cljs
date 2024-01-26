@@ -11,14 +11,14 @@
 (defui user-provider
   "User state provider business logic written in clojure script"
   [{:keys [children]}]
-  (let [[user set-current-user] (uix/use-state nil #_(clj->js {:username "Guest"}))
+  (let [[user set-current-user] (uix/use-state nil)
         login (fn [username]
+                (js/console.log "login" username)
                 (set-current-user (clj->js {:username username})))
         logout (fn [] (set-current-user nil))
         context {:user user
                  :login login
-                 :logout logout
-                 :setUser set-current-user}]
+                 :logout logout}]
     ($ UserContext.Provider
        (clj->js {:value context})
        children)))
