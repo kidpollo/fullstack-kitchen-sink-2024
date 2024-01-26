@@ -119,35 +119,45 @@ matters.
 Here, we use a simple lambda handler for all endpoints of the Todo API. The API
 endpoint should be made available by the Terraform output. The Terragrunt apply
 command builds and deploys the lambda automatically, sets up the API Gateway,
-and configures the routes described in our Terraform modules. No need for any
-bloat from a framework; let infrastructure be infrastructure.
+and configures the routes described in our Terraform modules. There is no need
+for any bloat from a framework; let infrastructure be infrastructure.
+
+The backend has a simplified authentication mechanism. It just requires the
+Authorization header to be set with a username. This is not a production-ready
+authentication mechanism but good as a baseline for propper authentication. I
+recommend using lambda authorizers. Another serverless feature that abstracts
+and simplifies concerns that add bloat to frameworks.
 
 ### Create Todo Item (POST /todo)
 
 ```bash
 curl -X POST https://<api-endpoint>/todo \
-     -H "Content-Type: application/json" \
-     -d '{"todo": "Sample Todo Item", "completed": false}'
+    -H "Authorization: Bearer your_username" \
+    -H "Content-Type: application/json" \
+    -d '{"todo": "Sample Todo Item", "completed": false}'
 ```
 
 ### Retrieve All Todo Items (GET /todo)
 
 ```bash
-curl -X GET https://<api-endpoint>/todo
+curl -X GET https://<api-endpoint>/todo \
+    -H "Authorization: Bearer your_username"
 ```
 
 ### Update Todo Item (PUT /todo/{id})
 
 ``` bash
 curl -X PUT https://<api-endpoint>/todo/{id} \
-     -H "Content-Type: application/json" \
-     -d '{"todo": "Updated Todo Item Text", "completed": true}'
+    -H "Authorization: Bearer your_username" \
+    -H "Content-Type: application/json" \
+    -d '{"todo": "Updated Todo Item Text", "completed": true}'
 ```
 
 ### Delete Todo Item (DELETE /todo/{id})
 
 ```bash
-curl -X DELETE https://<api-endpoint>/todo/{id}
+curl -X DELETE https://<api-endpoint>/todo/{id} \
+    -H "Authorization: Bearer your_username"
 ```
 
 ## Frontend
