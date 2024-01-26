@@ -8,6 +8,11 @@ const ddbClient = new DynamoDBClient();
 const tableName = process.env.TODOS_TABLE_NAME || "";
 
 export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
+  // Get username form the Authorization header
+  const authHeader = event.headers.authorization || '';
+  const username = authHeader.split(' ')[1];
+  const partitionKey = `todo#${username}`;
+
   try {
     switch (event.requestContext.http.method) {
       case "GET":
@@ -15,7 +20,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           TableName: tableName,
           KeyConditionExpression: 'PK = :pkval',
           ExpressionAttributeValues: {
-            ':pkval': { S: 'todo' }
+            ':pkval': { S: partitionKey }
           }
         };
 
@@ -48,7 +53,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
             const todoId = body.id ? body.id : uuidv4();
 
             const todoItem = {
-              PK: 'todo', // Partition key
+              PK: partitionKey, // Partition key
               SK: todoId,
               created_at: new Date().toISOString(),
               task: body.task,
@@ -76,7 +81,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           const updateParams = {
             TableName: tableName,
             Key: marshall({
-              PK: 'todo',
+              PK: partitionKey,
               SK: todoId
             }),
             UpdateExpression: 'SET #task = :task, #completed = :completed, #updated_at = :updated_at',
@@ -112,7 +117,7 @@ export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGateway
           const deleteParams = {
             TableName: tableName,
             Key: {
-              PK: { S: 'todo' },
+              PK: { S: partitionKey },
               SK: { S: todoId }
             }
           };

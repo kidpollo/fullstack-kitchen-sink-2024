@@ -42,7 +42,10 @@ const App = () => {
             <TodosScreen
                 isSyncing={isSyncing}
                 todos={todos}
-                setTodos={setTodos} />
+                setTodos={setTodos}
+                user={user}
+                logout={logout}
+            />
         );
     }
 

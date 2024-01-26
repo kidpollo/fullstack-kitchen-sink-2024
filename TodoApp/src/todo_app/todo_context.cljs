@@ -38,10 +38,10 @@
     (p/let [new-todos (filter #(get (js->clj %) "newTodo") current-todos)
             modified-todos (filter #(get (js->clj %) "modified") current-todos)
             deleted-todos (filter #(get (js->clj %) "deleted") current-todos)
-            _ (p/all (map #(todo-api/create-todo %) new-todos))
-            _ (p/all (map #(todo-api/update-todo %) modified-todos))
-            _ (p/all (map #(todo-api/delete-todo %) deleted-todos))
-            synced-todos (todo-api/get-todos)
+            _ (p/all (map #(todo-api/create-todo % user) new-todos))
+            _ (p/all (map #(todo-api/update-todo % user) modified-todos))
+            _ (p/all (map #(todo-api/delete-todo % user) deleted-todos))
+            synced-todos (todo-api/get-todos user)
             _ (set-todos synced-todos)]
       (set-is-syncing false))))
 

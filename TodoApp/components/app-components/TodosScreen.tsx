@@ -40,9 +40,11 @@ interface ITodosScreenProps {
     isSyncing: boolean;
     todos: Todo[];
     setTodos: any;
+    user: any;
+    logout: any;
 }
 
-const TodosScreen = ({ isSyncing, todos, setTodos }: ITodosScreenProps) => {
+const TodosScreen = ({ isSyncing, todos, setTodos, user, logout }: ITodosScreenProps) => {
     const [item, setItem] = useState('');
     const [swipedItemId, setSwipedItemId] = useState(null);
     const [lastItemSelected, setLastItemSelected] = useState(false);
@@ -130,6 +132,21 @@ const TodosScreen = ({ isSyncing, todos, setTodos }: ITodosScreenProps) => {
                     $md-justifyContent="center"
                     $md-alignItems="center"
                     $md-bg="$black">
+                    <>
+                        <HStack
+                            px="$6"
+                            py="$4"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            w="$full">
+                            <Text fontSize="$xl" fontWeight="$bold">
+                                Hello, {user.username}
+                            </Text>
+                            <Button onPress={logout}>
+                                <ButtonText color="$white">Logout</ButtonText>
+                            </Button>
+                        </HStack>
+                    </>
                     <StyledScrollView
                         pt="$6"
                         pb="$10"
@@ -155,9 +172,9 @@ const TodosScreen = ({ isSyncing, todos, setTodos }: ITodosScreenProps) => {
                             />
                         </Box>
 
-                        {todos.map((todo: any, index: number) => (
+                        {todos.map((todo: any) => (
                             <SwipeableContainer
-                                key={index}
+                                key={todo.id}
                                 todo={todo}
                                 todos={todos}
                                 setTodos={updateTodos}
