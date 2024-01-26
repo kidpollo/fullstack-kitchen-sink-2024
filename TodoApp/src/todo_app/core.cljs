@@ -1,5 +1,6 @@
 (ns todo-app.core
   (:require [uix.core :refer [$]]
+            [todo-app.user-context :refer [user-provider]]
             [todo-app.todo-context :refer [todo-provider]]))
 
 (def gluestack-themed (js/require "@gluestack-ui/themed"))
@@ -12,5 +13,6 @@
   [& _args]
   ($ gluestack-provider
      {:config gluestack-config}
-     ($ todo-provider
-        ($ (.-default (js/require "../../App.tsx"))))))
+     ($ user-provider
+        ($ todo-provider
+           ($ (.-default (js/require "../../App.tsx")))))))

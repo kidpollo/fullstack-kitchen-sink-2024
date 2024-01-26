@@ -1,7 +1,8 @@
 (ns todo-app.todo-context
   (:require [uix.core :as uix :refer [defui $]]
             [promesa.core :as p]
-            [todo-app.todo-api :as todo-api]))
+            [todo-app.todo-api :as todo-api]
+            [todo-app.user-context :refer [useUser]]))
 
 ;; NOTE: All the messy clj to js conversion stuff can be cleaned up
 ;; with https://github.com/applied-science/js-interop
@@ -48,6 +49,9 @@
   [{:keys [children]}]
   (let [[todos, dispatch] (uix/use-reducer todo-reducer [])
         [is-syncing, set-is-syncing] (uix/use-state false)
+        ;; extract the username from the user context
+        {{username "username"} "user"} (js->clj (useUser))
+        _ (js/console.log "username" username)
         ;; Simple wrapper around sync-todos to apply local changes and sync
         set-todos (fn [new-state]
                     (let [new-todos (if (fn? new-state)
@@ -61,10 +65,11 @@
     (uix/use-effect
      (fn []
        ;; Sync todos on mount
-       (set-todos todos)
+       (when username
+         (set-todos todos))
        ;; Optionaly sync in regular intervals
        ;;(js/setInterval perform-sync 10000)
-       )[]) ;; perform-sync on mount
+       )[username]) ;; perform-sync on mount
 
     ;; The todo business logic goes here
     ($ TodoContext.Provider
