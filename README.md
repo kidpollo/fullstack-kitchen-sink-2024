@@ -27,6 +27,8 @@ lot of their energy converting developer work to be compatible with
 Gitops-compatible approaches, so why not embrace modern practices that
 span teams from the start?
 
+https://github.com/kidpollo/fullstack-kitchen-sink-2024/assets/8182/823217dd-96dc-4098-87ca-9bdfcf9ae2c3
+
 ## Tools
 
 ### ASDF
