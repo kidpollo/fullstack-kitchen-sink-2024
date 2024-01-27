@@ -65,7 +65,7 @@ credential_process = /opt/homebrew/bin/aws-sso -u open -S "Default" process --ar
 ...
 ```
 
-## Infra
+## Infrastructure
 
 - Terragrunt to keep Terraform DRY.
 - Fully immutable environments, easily configurable.
@@ -73,22 +73,22 @@ credential_process = /opt/homebrew/bin/aws-sso -u open -S "Default" process --ar
 
 Inspired by: https://github.com/gruntwork-io/terragrunt-infrastructure-live-example.
 
-The infrastructure modules are also included in the mono-repo; however it is not
+The infrastructure modules are also included in the mono-repo, however it is not
 always ideal to have modules as part of a mono repo; see:
 https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example?tab=readme-ov-file#disadvantages-of-a-monorepo-for-terraform-modules
 
-The modules handle building, packaging, and deploying the backend to AWS. Having
-these steps coupled as part of the Terraform code provides a less chaotic
+The lambda modules handle building, packaging, and deploying the backend to AWS.
+Having these steps coupled as part of the Terraform code provides a less chaotic
 approach to Gitops or CI/CD-based releases.
 
-We must travel to the target environment folder to deploy this infrastructure to
-AWS and run the Terragrunt command. Assuming we have our `noprod` profile set,
+We must go to the target environment folder to deploy this infrastructure to AWS
+and run the Terragrunt command. Assuming we have our `noprod` profile set,
 everything should work. Everything in this repo should fit nicely in the free
 tier. To use your own account, modify `account.hcl` with the account-id you want
 to target. I recommend creating a sub-account and setting up
 [SSO](https://medium.com/@pushkarjoshi0410/how-to-set-up-aws-cli-with-aws-single-sign-on-sso-acf4dd88e056)
-for it. If you set up the profile like the above, the `aws-sso` tool will trigger the
-auth flow automatically.
+for it. If you set up the profile like the above, the `aws-sso` tool will
+trigger the auth flow automatically.
 
 ```bash
 cd infra/live/nonprod/us-west-2/stage
@@ -97,6 +97,26 @@ terragrunt run-all output
 ```
 
 NOTE: Save the output so you can use the resulting API URL to configure the frontend
+
+We are only defining the stage environment here but adding more environments
+while keeping the Terraform code DRY, thanks to Terragrunt. Terragrunt `hcl`
+files allow us to reuse common parts of the infrastructure defined in
+`live/_envcommon`. The infrastructure standard components refer to shared
+modules in the `infra/modules` folder.
+
+Deploying to a new AWS, environment, and region combination is a simple
+operation of creating straightforward paths and corresponding `terragrunt.hcl`
+file modifications. To add a prod environment target, the procedure would look
+something similar to the following:
+
+```bash
+mkdir -p infra/live/prod
+cp -R infra/live/nonprod infra/live/prod
+find infra/live/prod -name '.*' | xargs rm -rf #remove the hidden files from stage
+mv infra/live/prod/us-west-2/stage infra/live/prod/us-west-2/prod #rename env to prod
+# modify `.hcl` files with appropriate values and overrides
+```
+
 
 ### Local infra
 
