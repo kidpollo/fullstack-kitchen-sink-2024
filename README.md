@@ -144,7 +144,7 @@ for any bloat from a framework; let infrastructure be infrastructure.
 
 The backend has a simplified authentication mechanism. It just requires the
 Authorization header to be set with a username. This is not a production-ready
-authentication mechanism but good as a baseline for propper authentication. I
+authentication mechanism but a good baseline for proper authentication. I
 recommend using lambda authorizers. Another serverless feature that abstracts
 and simplifies concerns that add bloat to frameworks.
 
@@ -192,7 +192,7 @@ and state management was messy and too complex.
 time. Users love these projects. However, the onboarding process and the
 cognitive load of learning Clojure for some front-end engineers led to moderate
 adoption. I've seen organizations actively pull away from this as hiring and
-community support are not as strong as with other Frontend Dev communities. 
+community support are not as strong as with other Frontend Dev communities.
 
 With time, React has improved a lot; now, with
 [Hooks](https://medium.com/@matthill8286/embracing-modern-react-a-beginners-guide-to-react-hooks-2349fde20ce0),
@@ -214,15 +214,13 @@ Krell allows us to have Clojurescipt and JS/TS co-exist. I chose to do this by
 adding a simple wrapper using UIX that enables me to have a React context
 written in Clojurescript that handles the communication with the backend and the
 business logic. I could expand on this much more, but I'll let you look at the
-`src` folder on the Frontend app to see how simple the integration is. I think
-the steps to get a setup similar to this one are not too complicated. I am sure
-there could be some automation around this. See the configuration below:
+`src` folder on the Frontend app to see how simple the integration is. See the
+configuration below:
 
 ### Setup
 
 The following is all you need to get the Krell wrapper and start writing modern
 React with UIX. These changes have already been applied in this repo.
-
 
 ``` bash
 bunx react-native@latest init TodoApp
