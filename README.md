@@ -262,10 +262,12 @@ business logic. I could expand on this much more, but I'll let you look at the
 `src` folder on the Frontend app to see how simple the integration is. See the
 configuration below:
 
-### Setup
+### Krell Setup
 
-The following is all you need to get the Krell wrapper and start writing modern
-React with UIX. These changes have already been applied in this repo.
+NOTE: The following is all you need to get the Krell wrapper and start writing
+modern React with UIX. These changes have already been applied in this repo.
+This is here if you want to undo this CLJS integration or learn how easy it was
+to make.
 
 ``` bash
 bunx react-native@latest init TodoApp
