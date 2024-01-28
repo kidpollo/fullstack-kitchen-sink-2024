@@ -27,14 +27,12 @@ include "root" {
 # Include the envcommon configuration for the component. The envcommon
 # configuration contains settings that are common for the component across all
 # environments.
-include "todo_python_lambda" {
-  path   = "${dirname(find_in_parent_folders())}/_envcommon/todo_python_lambda.hcl"
+include "todo_python_package" {
+  path   = "${dirname(find_in_parent_folders())}/_envcommon/todo_table_stream.hcl"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # We don't need to override any of the common parameters for this environment,
 # so we don't specify any inputs.
 # ---------------------------------------------------------------------------------------------------------------------
-inputs = {
-  lambda_log_level = "INFO"
-}
+# inputs = { override = "me" }
