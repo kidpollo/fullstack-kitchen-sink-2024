@@ -4,14 +4,9 @@
 # maintainable: https://github.com/gruntwork-io/terragrunt
 # ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  source = "../../../../../modules/pk-sk-ddb-table"
-}
-
-locals {
-  env_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
+  source = "../../../../modules/python-package"
 }
 
 inputs = {
-  base_table_name = "todos-table"
-  env = local.env_vars.locals.environment
+  py_code_path = "${get_repo_root()}/python-lambda-backend"
 }

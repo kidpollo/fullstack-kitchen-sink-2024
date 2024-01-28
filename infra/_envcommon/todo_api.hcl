@@ -4,7 +4,7 @@
 # maintainable: https://github.com/gruntwork-io/terragrunt
 # ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  source = "../../../../../modules/todo-api"
+  source = "../../../../modules/todo-api"
 }
 
 locals {

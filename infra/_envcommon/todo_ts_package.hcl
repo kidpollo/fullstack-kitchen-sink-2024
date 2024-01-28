@@ -4,9 +4,9 @@
 # maintainable: https://github.com/gruntwork-io/terragrunt
 # ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  source = "../../../../../modules/python-package"
+  source = "../../../../modules/ts-package"
 }
 
 inputs = {
-  py_code_path = "${get_repo_root()}/python-lambda-backend"
+  ts_code_path = "${get_repo_root()}/ts-lambda-backend"
 }

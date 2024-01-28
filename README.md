@@ -9,11 +9,10 @@ other [benefits and drawbacks](https://medium.com/@alessandro.traversi/monorepos
 
 It references best practices around using Terraform, an AWS Lambda-based
 backend, and a React Native frontend. However, it should be a great starting
-point for a React Native-based app with a straightforward request/response API
-using AWS lambda.
+point for a React app.
 
 This repo also works as a helpful tech radar of software practices and libraries
-that are relevant these days. I don't dislike frameworks. I think they can
+that are most interesting to me. I don't dislike frameworks. I think they can
 provide great value at times. However, flexibility is critical for scaling and
 evolving modern apps and infrastructures. Terraform and Terragrunt + the current
 state of the Serverless capabilities provided by AWS, make for a highly
@@ -111,12 +110,11 @@ something similar to the following:
 
 ```bash
 mkdir -p infra/live/prod
-cp -R infra/live/nonprod infra/live/prod
+cp -R infra/live/nonprod/** infra/live/prod/
 find infra/live/prod -name '.*' | xargs rm -rf #remove the hidden files from stage
 mv infra/live/prod/us-west-2/stage infra/live/prod/us-west-2/prod #rename env to prod
 # modify `.hcl` files with appropriate values and overrides
 ```
-
 
 ### Local infra
 
