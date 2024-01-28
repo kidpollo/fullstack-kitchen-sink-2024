@@ -63,7 +63,7 @@ aws-sso-profile Account:Role
 ```
 
 However, the Terraform in this project does not need this, as it is configured to
-use a profile that can automatically be set via `crential_process` in `~./aws/config`
+use a profile that can automatically be set via `crential_process` in `~/.aws/config`
 
 ```
 ...
@@ -162,7 +162,7 @@ terragrunt run-all apply
 terragrunt run-all output
 ```
 
-NOTE: If you change the value of `TODO_API_URL` in `./TodoApp/`.env` frontend
+NOTE: If you change the value of `TODO_API_URL` in `./TodoApp/.env` frontend
 configuration, you might need to clear the node environment. This is a problem
 with `react-native-config`. If you have doubts, run `bun run react-native clean`
 and re-install and build the fronted.
@@ -245,7 +245,7 @@ many of those original concerns addressed by the Clojurescript community are
 covered. Clojurescript has enhanced with time a lot. All of the limitations of
 it being tied to the JVM have been lifted, and many new projects and libraries
 have emerged. One of my favorites is
-[NBB](https://github.com/babashka/nbb)](https://github.com/babashka/nbb), which
+[NBB](https://github.com/babashka/nbb), which
 allows me to write fast scripts using CLJS directly on the NodeJS VM.
 
 Much to my surprise, I combined 2 of those newer projects to allow me to create
@@ -316,7 +316,3 @@ clj -M -m krell.main -co build.edn -c -r # new terminal
 bun start
 bun ios # new terminal
 ```
-
-
-
-
