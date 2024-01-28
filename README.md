@@ -48,6 +48,14 @@ This mono repo assumes you have an AWS account. I prefer using
 [aws-sso-cli](https://github.com/synfinatic/aws-sso-cli) to handle all my
 aws-accounts.
 
+When deployed to AWS, all this infrastructure falls within the free tier. If you
+are tinkering, I recommend you work directly with AWS using an account you've
+[manually created within your org](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_create.html).
+
+If you want to run this locally(more on that later), you can ignore [setting up SSO](https://docs.aws.amazon.com/singlesignon/latest/userguide/get-set-up-for-idc.html)
+and the `aws-sso` command line, but I strongly encourage you to deploy this to
+the cloud.
+
 Setup your profiles and set on your terminal session with:
 
 ```
@@ -90,7 +98,7 @@ for it. If you set up the profile like the above, the `aws-sso` tool will
 trigger the auth flow automatically.
 
 ```bash
-cd infra/live/nonprod/us-west-2/stage
+cd infra/nonprod/us-west-2/stage
 terragrunt run-all apply
 terragrunt run-all output
 ```
@@ -118,7 +126,46 @@ mv infra/live/prod/us-west-2/stage infra/live/prod/us-west-2/prod #rename env to
 
 ### Local infra
 
-TODO
+Running locally has a lot of benefits. I strongly value having a dev environment
+that drifts minimally from prod. This is not always possible or easy or even
+free 😔. I have a love/hate relationship with
+[Localstack](https://www.localstack.cloud/), but it does provide incredible
+value and is the best way (in my opinion) to run serverless stacks locally.
+
+The slightly inconvenient issue is that the API Gateway V2 is "pay-walled". You
+can access this feature for free if you want to continue on this path. I won't
+detail how to set up Localstack as they have excellent documentation.
+
+The only special config you need, once you have Localstack running, is to add to
+your `.aws/config` file:
+
+```
+[profile localstack]
+region=us-west-2
+output=json
+endpoint_url = http://localhost:4566
+```
+
+And to your `.aws/credentials` credentials file:
+
+```
+[localstack]
+aws_access_key_id=test
+aws_secret_access_key=test
+```
+
+You should be able to deploy your stack locally with:
+
+```bash
+cd infra/dev/us-west-2/stage
+terragrunt run-all apply
+terragrunt run-all output
+```
+
+NOTE: If you change the value of `TODO_API_URL` in `./TodoApp/`.env` frontend
+configuration, you might need to clear the node environment. This is a problem
+with `react-native-config`. If you have doubts, run `bun run react-native clean`
+and re-install and build the fronted.
 
 ## Backend
 
